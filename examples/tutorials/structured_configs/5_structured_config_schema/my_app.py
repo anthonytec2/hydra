@@ -5,6 +5,7 @@ from omegaconf import MISSING, DictConfig
 
 import hydra
 from hydra.core.config_store import ConfigStore
+from typing import List, Any
 
 
 @dataclass
@@ -31,12 +32,22 @@ class PostGreSQLConfig(DBConfig):
     timeout: int = 10
 
 
+defaults = {"db": "mysql"}
+
+
+@dataclass
+class UserConfig:
+    defaults: List[Any] = MISSING
+    db: DBConfig = MISSING
+
+
 # registering db/mysql and db/postgresql schemas.
 cs = ConfigStore.instance()
 cs.store(group="db", name="mysql", node=MySQLConfig, provider="main")
 cs.store(
     group="db", name="postgresql", node=PostGreSQLConfig, provider="main",
 )
+cs.store(name="config", node=UserConfig)
 
 
 # config here is config.yaml under the conf directory.
